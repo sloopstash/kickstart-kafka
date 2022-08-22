@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: controller
+spec:
+  selector:
+    matchLabels:
+      service: controller
+  replicas: 3
+  serviceName: controller
+  template:
+    metadata:
+      labels:
+        service: controller
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                    - linux
+                - key: node-role.kubernetes.io/worker
+                  operator: In
+                  values:
+                    - worker
+                - key: type
+                  operator: In
+                  values:
+                    - cloud
+                - key: provider
+                  operator: In
+                  values:
+                    - aws
+                - key: service
+                  operator: In
+                  values:
+                    - controller
+      containers:
+        - name: main
+          image: sloopstash/kafka:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: generic
+                  key: cluster_id
+            - name: LOG_DIR
+              value: /opt/kafka/log
+            - name: KAFKA_OPTS
+              value: "-Djava.net.preferIPv4Stack=True"
+          volumeMounts:
+            - name: supervisor-server
+              mountPath: /etc/supervisord.conf
+              subPath: supervisor-server
+            - name: controller-supervisor
+              mountPath: /etc/supervisord.d/controller.ini
+              subPath: controller-supervisor
+            - name: controller-conf
+              mountPath: /opt/kafka/conf/controller.conf
+              subPath: controller-conf
+            - name: controller-script
+              mountPath: /opt/kafka/script/controller.sh
+              subPath: controller-script
+            - name: controller-data
+              mountPath: /opt/kafka/data
+          command:
+            - "/usr/bin/supervisord"
+            - "-c"
+            - "/etc/supervisord.conf"
+          ports:
+            - containerPort: 9093
+          readinessProbe:
+            tcpSocket:
+              port: 9093
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9093
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: supervisor-server
+          configMap:
+            name: controller-cm
+        - name: controller-supervisor
+          configMap:
+            name: controller-cm
+        - name: controller-conf
+          configMap:
+            name: controller-cm
+        - name: controller-script
+          configMap:
+            name: controller-cm
+            defaultMode: 0755
+        - name: controller-data
+          persistentVolumeClaim:
+            claimName: controller-data
+  volumeClaimTemplates:
+    - metadata:
+        name: controller-data
+      spec:
+        storageClassName: controller-data
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

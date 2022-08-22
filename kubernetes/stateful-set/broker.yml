@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: broker
+spec:
+  selector:
+    matchLabels:
+      service: broker
+  replicas: 3
+  serviceName: broker
+  template:
+    metadata:
+      labels:
+        service: broker
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                    - linux
+                - key: node-role.kubernetes.io/worker
+                  operator: In
+                  values:
+                    - worker
+                - key: type
+                  operator: In
+                  values:
+                    - cloud
+                - key: provider
+                  operator: In
+                  values:
+                    - aws
+                - key: service
+                  operator: In
+                  values:
+                    - broker
+      containers:
+        - name: main
+          image: sloopstash/kafka:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: generic
+                  key: cluster_id
+            - name: LOG_DIR
+              value: /opt/kafka/log
+            - name: KAFKA_OPTS
+              value: "-Djava.net.preferIPv4Stack=True"
+          volumeMounts:
+            - name: supervisor-server
+              mountPath: /etc/supervisord.conf
+              subPath: supervisor-server
+            - name: broker-supervisor
+              mountPath: /etc/supervisord.d/broker.ini
+              subPath: broker-supervisor
+            - name: broker-conf
+              mountPath: /opt/kafka/conf/broker.conf
+              subPath: broker-conf
+            - name: broker-script
+              mountPath: /opt/kafka/script/broker.sh
+              subPath: broker-script
+            - name: broker-data
+              mountPath: /opt/kafka/data
+          command:
+            - "/usr/bin/supervisord"
+            - "-c"
+            - "/etc/supervisord.conf"
+          ports:
+            - containerPort: 9092
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: supervisor-server
+          configMap:
+            name: broker-cm
+        - name: broker-supervisor
+          configMap:
+            name: broker-cm
+        - name: broker-conf
+          configMap:
+            name: broker-cm
+        - name: broker-script
+          configMap:
+            name: broker-cm
+            defaultMode: 0755
+        - name: broker-data
+          persistentVolumeClaim:
+            claimName: broker-data
+  volumeClaimTemplates:
+    - metadata:
+        name: broker-data
+      spec:
+        storageClassName: broker-data
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

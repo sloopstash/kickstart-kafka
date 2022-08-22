@@ -1,0 +1,233 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: controller-data-0
+spec:
+  storageClassName: controller-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce 
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/controller-data/0
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - controller
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: controller-data-1
+spec:
+  storageClassName: controller-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/controller-data/1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - controller
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: controller-data-2
+spec:
+  storageClassName: controller-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/controller-data/2
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - controller
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: broker-data-0
+spec:
+  storageClassName: broker-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/broker-data/0
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - broker
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: broker-data-1
+spec:
+  storageClassName: broker-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/broker-data/1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - broker
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: broker-data-2
+spec:
+  storageClassName: broker-data
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/broker-data/2
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+          - key: node-role.kubernetes.io/worker
+            operator: In
+            values:
+              - worker
+          - key: type
+            operator: In
+            values:
+              - cloud
+          - key: provider
+            operator: In
+            values:
+              - aws
+          - key: service
+            operator: In
+            values:
+              - broker
