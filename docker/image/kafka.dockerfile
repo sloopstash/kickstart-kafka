@@ -14,21 +14,24 @@ RUN set -x \
 RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/kafka kafka
 
-# Download and extract Kafka.
+# Download Kafka.
 RUN set -x \
-  && wget https://downloads.apache.org/kafka/3.2.1/kafka_2.13-3.2.1.tgz \
-  && tar -xzf kafka_2.13-3.2.1.tgz \
-  && mv kafka_2.13-3.2.1 /usr/local/kafka \
-  && rm -r kafka_2.13-3.2.1*
+  && wget https://downloads.apache.org/kafka/3.2.1/kafka_2.13-3.2.1.tgz --quiet
 
-# Create necessary directories.
+# Install Kafka.
 RUN set -x \
-  && mkdir -p /opt/kafka/conf \
-  && mkdir -p /opt/kafka/log \
-  && mkdir -p /opt/kafka/data \
-  && mkdir -p /opt/kafka/script \
-  && chown -R kafka:kafka /opt/kafka \
-  && history -c
+  && tar xvzf kafka_2.13-3.2.1.tgz > /dev/null \
+  && cp -r kafka_2.13-3.2.1/* /usr/local/lib/kafka/ \
+  && chown -R kafka:kafka /usr/local/lib/kafka \
+  && rm -rf kafka_2.13-3.2.1.tgz kafka_2.13-3.2.1
+RUN set -x \
+  && mkdir /opt/kafka \
+  && mkdir /opt/kafka/data \
+  && mkdir /opt/kafka/log \
+  && mkdir /opt/kafka/conf \
+  && mkdir /opt/kafka/script \
+  && touch /opt/kafka/system \
+  && chown -R kafka:kafka /opt/kafka
 
-# Set default work directory.
-WORKDIR /opt/kafka
+# Switch work directory.
+WORKDIR /
