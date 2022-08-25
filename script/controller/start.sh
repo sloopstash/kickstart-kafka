@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NODE_ID=${HOSTNAME:11}
+NODE_ID=$(( ${HOSTNAME:22} + 1 ))
 SERVER_REFERENCE_CONF=/opt/kafka/conf/server-reference.conf
 SERVER_CONF=/opt/kafka/conf/server.conf
 sed "s/node.id=.*/node.id=$NODE_ID/" $SERVER_REFERENCE_CONF > $SERVER_CONF
