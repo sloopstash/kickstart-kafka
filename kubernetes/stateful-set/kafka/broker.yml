@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: controller
+  name: kafka-broker-node
 spec:
   selector:
     matchLabels:
-      service: controller
+      service: kafka-broker
   replicas: 3
-  serviceName: controller
+  serviceName: kafka-broker
   template:
     metadata:
       labels:
-        service: controller
+        service: kafka-broker
     spec:
       affinity:
         nodeAffinity:
@@ -37,7 +37,15 @@ spec:
                 - key: service
                   operator: In
                   values:
-                    - controller
+                    - ec2
+                - key: region
+                  operator: In
+                  values:
+                    - us-west-2
+                - key: availability_zone
+                  operator: In
+                  values:
+                    - us-west-2a
       containers:
         - name: main
           image: sloopstash/kafka:v1
@@ -56,55 +64,54 @@ spec:
             - name: supervisor-server
               mountPath: /etc/supervisord.conf
               subPath: supervisor-server
-            - name: controller-supervisor
-              mountPath: /etc/supervisord.d/controller.ini
-              subPath: controller-supervisor
-            - name: controller-conf
-              mountPath: /opt/kafka/conf/controller.conf
-              subPath: controller-conf
-            - name: controller-script
-              mountPath: /opt/kafka/script/controller.sh
-              subPath: controller-script
-            - name: controller-data
+            - name: kafka-broker-supervisor
+              mountPath: /etc/supervisord.d/kafka-broker.ini
+              subPath: kafka-broker-supervisor
+            - name: kafka-broker-server
+              mountPath: /opt/kafka/conf/server-reference.conf
+              subPath: kafka-broker-server
+            - name: kafka-broker-data
               mountPath: /opt/kafka/data
+            - name: kafka-broker-script
+              mountPath: /opt/kafka/script
           command:
             - "/usr/bin/supervisord"
             - "-c"
             - "/etc/supervisord.conf"
           ports:
-            - containerPort: 9093
+            - containerPort: 9092
           readinessProbe:
             tcpSocket:
-              port: 9093
+              port: 9092
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
-              port: 9093
+              port: 9092
             initialDelaySeconds: 15
             periodSeconds: 10
       volumes:
         - name: supervisor-server
           configMap:
-            name: controller-cm
-        - name: controller-supervisor
+            name: kafka-broker
+        - name: kafka-broker-supervisor
           configMap:
-            name: controller-cm
-        - name: controller-conf
+            name: kafka-broker
+        - name: kafka-broker-server
           configMap:
-            name: controller-cm
-        - name: controller-script
-          configMap:
-            name: controller-cm
-            defaultMode: 0755
-        - name: controller-data
+            name: kafka-broker
+        - name: kafka-broker-data
           persistentVolumeClaim:
-            claimName: controller-data
+            claimName: kafka-broker-data
+        - name: kafka-broker-script
+          hostPath:
+            path: /opt/kickstart-kafka/script/broker
+            type: Directory
   volumeClaimTemplates:
     - metadata:
-        name: controller-data
+        name: kafka-broker-data
       spec:
-        storageClassName: controller-data
+        storageClassName: kafka-broker-data
         volumeMode: Filesystem
         accessModes:
           - ReadWriteOnce

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: controller-data-0
+  name: kafka-controller-data-1
 spec:
-  storageClassName: controller-data
+  storageClassName: kafka-controller-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -11,7 +11,7 @@ spec:
     - ReadWriteOnce 
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/controller-data/0
+    path: /mnt/kubernetes/kafka/data/controller/1
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -35,14 +35,22 @@ spec:
           - key: service
             operator: In
             values:
-              - controller
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: controller-data-1
+  name: kafka-controller-data-2
 spec:
-  storageClassName: controller-data
+  storageClassName: kafka-controller-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -50,7 +58,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/controller-data/1
+    path: /mnt/kubernetes/kafka/data/controller/2
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -74,14 +82,22 @@ spec:
           - key: service
             operator: In
             values:
-              - controller
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: controller-data-2
+  name: kafka-controller-data-3
 spec:
-  storageClassName: controller-data
+  storageClassName: kafka-controller-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -89,7 +105,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/controller-data/2
+    path: /mnt/kubernetes/kafka/data/controller/3
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -113,14 +129,22 @@ spec:
           - key: service
             operator: In
             values:
-              - controller
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: broker-data-0
+  name: kafka-broker-data-1
 spec:
-  storageClassName: broker-data
+  storageClassName: kafka-broker-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -128,7 +152,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/broker-data/0
+    path: /mnt/kubernetes/kafka/data/broker/1
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -152,14 +176,22 @@ spec:
           - key: service
             operator: In
             values:
-              - broker
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: broker-data-1
+  name: kafka-broker-data-2
 spec:
-  storageClassName: broker-data
+  storageClassName: kafka-broker-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -167,7 +199,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/broker-data/1
+    path: /mnt/kubernetes/kafka/data/broker/2
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -191,14 +223,22 @@ spec:
           - key: service
             operator: In
             values:
-              - broker
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: broker-data-2
+  name: kafka-broker-data-3
 spec:
-  storageClassName: broker-data
+  storageClassName: kafka-broker-data
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -206,7 +246,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/broker-data/2
+    path: /mnt/kubernetes/kafka/data/broker/3
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -230,4 +270,12 @@ spec:
           - key: service
             operator: In
             values:
-              - broker
+              - ec2
+          - key: region
+            operator: In
+            values:
+              - us-west-2
+          - key: availability_zone
+            operator: In
+            values:
+              - us-west-2a

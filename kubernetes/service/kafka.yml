@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: controller
+  name: kafka-controller
   labels:
-    service: controller
+    service: kafka-controller
 spec:
   clusterIP: None
   ports:
@@ -12,14 +12,14 @@ spec:
       targetPort: 9093
       protocol: TCP
   selector:
-    service: controller
+    service: kafka-controller
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: broker
+  name: kafka-broker
   labels:
-    service: broker
+    service: kafka-broker
 spec:
   clusterIP: None
   ports:
@@ -28,4 +28,4 @@ spec:
       targetPort: 9092
       protocol: TCP
   selector:
-    service: broker
+    service: kafka-broker
