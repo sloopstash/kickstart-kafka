@@ -54,8 +54,8 @@ spec:
             - name: CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
-                  name: generic
-                  key: cluster_id
+                  name: kafka-cluster
+                  key: cluster-id
             - name: LOG_DIR
               value: /opt/kafka/log
             - name: KAFKA_OPTS
